@@ -1,81 +1,74 @@
-// todo.js
-const db = require("./models");
+/* eslint-disable no-undef */
 
-const getJSDate = (days) => {
-  if (!Number.isInteger(days)) {
-    throw new Error("Need to pass an integer as days");
-  }
-  const today = new Date();
-  const oneDay = 60 * 60 * 24 * 1000;
-  return new Date(today.getTime() + days * oneDay);
-};
-
-const addTask = async ({ title, dueDate, completed }) => {
-  // Implement the logic to add a new task to the database
-  // You can use db.Todo.create() or any appropriate method
-  const newTodo = await db.Todo.create({
-    title,
-    dueDate,
-    completed,
-  });
-  return newTodo;
-};
-
-const markAsComplete = async (taskId) => {
-  // Implement the logic to mark a task as completed in the database
-  await db.Todo.update({ completed: true }, { where: { id: taskId } });
-};
-
-const overdue = async () => {
-  // Implement the logic to retrieve overdue tasks from the database
-  const overdueItems = await db.Todo.findAll({
-    where: {
-      dueDate: { [db.Sequelize.Op.lt]: new Date() },
-      completed: false,
-    },
-  });
-  return overdueItems;
-};
-
-const dueToday = async () => {
-  // Implement the logic to retrieve tasks due today from the database
-  const dueTodayItems = await db.Todo.findAll({
-    where: {
-      dueDate: { [db.Sequelize.Op.eq]: new Date() },
-      completed: false,
-    },
-  });
-  return dueTodayItems;
-};
-
-const dueLater = async () => {
-  // Implement the logic to retrieve tasks due later from the database
-  const dueLaterItems = await db.Todo.findAll({
-    where: {
-      dueDate: { [db.Sequelize.Op.gt]: new Date() },
-      completed: false,
-    },
-  });
-  return dueLaterItems;
-};
-
-const toDisplayableList = (todos) => {
-  // Implement the logic to convert todos to a displayable list
-  // Return the formatted list
-  return todos.map((todo) => ({
-    id: todo.id,
-    title: todo.title,
-    dueDate: todo.dueDate,
-    completed: todo.completed,
-  }));
-};
-
-module.exports = {
-  getJSDate,
-  addTask,
-  markAsComplete,
-  overdue,
-  dueToday,
-  dueLater,
-  toDisplayableList,
-};
+const todoList = () => {
+    all = [];
+    const add = (todoItem) => {
+      all.push(todoItem);
+    };
+    const markAsComplete = (index) => {
+      all[index].completed = true;
+    };
+  
+    const overdue = () => {
+      let today = new Date().toLocaleDateString("en-CA");
+      // Write the date check condition here and return the array of overdue items accordingly.
+      // FILL YOUR CODE HERE
+      // ..
+      // ..
+      // ..
+      return all.filter((todo) => todo.dueDate < today);
+    };
+  
+    const dueToday = () => {
+      let today = new Date().toLocaleDateString("en-CA");
+      // Write the date check condition here and return the array of todo items that are due today accordingly.
+      // FILL YOUR CODE HERE
+      // ..
+      // ..
+      // ..
+      return all.filter((todo) => todo.dueDate == today);
+    };
+  
+    const dueLater = () => {
+      let today = new Date().toLocaleDateString("en-CA");
+      // Write the date check condition here and return the array of todo items that are due later accordingly.
+      // FILL YOUR CODE HERE
+      // ..
+      // ..
+      // ..
+      return all.filter((todo) => todo.dueDate > today);
+    };
+  
+    const toDisplayableList = (list) => {
+      let today = new Date().toLocaleDateString("en-CA");
+      // Format the To-Do list here, and return the output snvmtring as per the format given above.
+      // FILL YOUR CODE HERE
+      // ..
+      // ..
+      // ..
+      // return OUTPUT_STRING
+      return list
+        .map(
+          (todo) =>
+            `${todo.completed ? "[x]" : "[ ]"} ${todo.title} ${
+              todo.dueDate == today ? "" : todo.dueDate
+            }`,
+        )
+        .join("\n");
+    };
+  
+    return {
+      all,
+      add,
+      markAsComplete,
+      overdue,
+      dueToday,
+      dueLater,
+      toDisplayableList,
+    };
+  };
+  
+  // ####################################### #
+  // DO NOT CHANGE ANYTHING BELOW THIS LINE. #
+  // ####################################### #
+  module.exports = todoList;
