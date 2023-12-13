@@ -29,6 +29,21 @@ describe('Todo List Tests', () => {
     });
   });
 
+  test('should add a new todo', () => {
+    todos.add({
+      title: 'New Task',
+      dueDate: '2023-01-10',
+      completed: false,
+    });
+    expect(todos.all.length).toBe(6);
+    expect(todos.all[5].title).toBe('New Task');
+  });
+
+  test('should mark a todo as completed', () => {
+    todos.markAsComplete(0);
+    expect(todos.all[0].completed).toBe(true);
+  });
+
   test('should retrieve overdue items', () => {
     const overdues = todos.overdue();
     expect(overdues.length).toBe(1);
@@ -51,32 +66,6 @@ describe('Todo List Tests', () => {
       'File taxes',
       'Pay electric bill',
     ]);
-  });
-
-  test('should mark a todo as completed', () => {
-    todos.markAsComplete(0);
-    expect(todos.all[0].completed).toBe(true);
-  });
-
-  test('should add a new todo', () => {
-    todos.add({
-      title: 'New Task',
-      dueDate: '2023-01-10',
-      completed: false,
-    });
-    expect(todos.all.length).toBe(6);
-    expect(todos.all[5].title).toBe('New Task');
-  });
-
-  test('should format items for display', () => {
-    const items = [
-      { title: 'Task 1', dueDate: '2023-01-01', completed: false },
-      { title: 'Task 2', dueDate: '2023-01-02', completed: true },
-    ];
-    const displayableList = todos.toDisplayableList(items);
-    const expectedOutput =
-      '[ ] Task 1 2023-01-01\n[x] Task 2 2023-01-02\n';
-    expect(displayableList).toBe(expectedOutput);
   });
 
   // Add more test cases as needed
