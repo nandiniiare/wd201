@@ -1,6 +1,6 @@
 // models/todo.js
 'use strict';
-const {Model} = require('sequelize');
+const {Model,DataTypes} = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
@@ -75,24 +75,14 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     displayableString() {
-      let checkbox = this.completed ? "[x]" : "[ ]";
+      const status = this.completed ? '[x]' : '[ ]';
 
-      const checkToday = (date,t) => {
-        let date_arr = String(date).split("-");
-        let today_arr = String(t).split("-");
+      let dueDateString = '';
+    if (this.dueDate instanceof Date) {
+      dueDateString = this.dueDate.toISOString().split('T')[0];
+    }
 
-        for (let i = 0; i < 8; i++) {
-          if (date_arr[i] != today_arr[i]) {
-            return false;
-          }
-        }
-        return true;
-      }
-
-      if(checkToday(this.dueDate,Todo.today)){
-        return `${this.id}. ${checkbox} ${this.title}`;
-      }
-      return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
+    return `${this.id}. ${status} ${this.title} ${dueDateString}`;
     }
   }
   Todo.init({

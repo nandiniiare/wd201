@@ -68,6 +68,7 @@ describe("Tests for Todo model functions", function () {
     expect(aTodo.completed).toBe(false);
     const displayValue = aTodo.displayableString();
     // Adjust the expected format based on your requirements
+    // Adjust the expected format based on your requirements
     expect(displayValue).toBe(`${aTodo.id}. [ ] ${aTodo.title}`);
   });
 
@@ -80,6 +81,7 @@ describe("Tests for Todo model functions", function () {
     const displayValue = aTodo.displayableString();
     // Adjust the expected format based on your requirements
     expect(displayValue).toBe(`${aTodo.id}. [x] ${aTodo.title}`);
+
   });
 });
 
