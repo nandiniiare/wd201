@@ -36,14 +36,18 @@ test('retrieves due today items', () => {
 });
 
 test('retrieves due later items', () => {
-  const todoList = [
-    new Todo(1, 'Due Later Todo', false, '2023-01-01'),
-    new Todo(2, 'Not Due Later Todo', false, new Date().toLocaleDateString())
-  ];
-  const dueLaterItems = getDueLaterItems(todoList);
-  expect(dueLaterItems.length).toBe(1);
-  expect(dueLaterItems[0].title).toBe('Due Later Todo');
-});
+    const todoList = [
+      new Todo(1, 'Due Later Todo', false, '2023-01-01'),
+      new Todo(2, 'Not Due Later Todo', false, new Date().toLocaleDateString())
+    ];
+    const dueLaterItems = getDueLaterItems(todoList);
+  
+    console.log('Due Later Items:', dueLaterItems);
+  
+    expect(dueLaterItems.length).toBe(1);
+    expect(dueLaterItems[0].title).toBe('Due Later Todo');
+  });
+  
 
 // Additional tests and assertions as needed for toDisplayableList or other functionalities
  
