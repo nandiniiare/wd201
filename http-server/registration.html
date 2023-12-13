@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family:'Courier New', Courier, monospace;
+            background-color: #f1f1f1;
+            color:black;
+        }
+
+        .container {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin: auto;
+            width: 40%;
+            box-shadow: 0 10px 8px 25px rgba(191, 231, 17, 0.2);
+        }
+
+        input[type=text], input[type=email], input[type=password], input[type=date], input[type=checkbox] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 2px solid rgb(25, 24, 23), 111, 14;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: rgb(76, 175, 109);
+            color: rgb(245, 241, 241);
+            padding: 15px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-family:'Courier New', Courier, monospace;
+            font-size:18px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 2px solid #797676;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+        #h{
+            color : orange;
+            font-family:'Courier New', Courier, monospace;
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+<h2 id="h">REGISTRATION FORM</h2>
+<div class="container">
+    <form id="registrationForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="terms">Accept Terms&conditions :</label>
+        <input type="checkbox" id="terms" name="terms" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<table id="userTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Dob</th>
+            <th>Accepted terms?</th>
+        </tr>
+    </thead>
+    <tbody>
+       
+    </tbody>
+</table>
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+      
+        let dobInput = document.getElementById('dob');
+        let dob = new Date(dobInput.value);
+        let today = new Date();
+        let minDate = new Date();
+        minDate.setFullYear(today.getFullYear() - 55);
+        let maxDate = new Date();
+        maxDate.setFullYear(today.getFullYear() - 18);
+
+        if (dob < minDate || dob > maxDate) {
+            alert('Date of birth must be between 18 and 55 years.');
+            return;
+        }
+
+       
+        let formData = {
+            name: document.getElementById('name').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            dob: document.getElementById('dob').value,
+            terms: document.getElementById('terms').checked
+        };
+
+      
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        entries.unshift(formData);
+        localStorage.setItem('entries', JSON.stringify(entries));
+
+      
+        updateTable();
+    });
+
+    function updateTable() {
+        
+        let tableBody = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+       
+        tableBody.innerHTML = '';
+
+      
+        entries.forEach(entry => {
+            let row = tableBody.insertRow();
+            Object.values(entry).forEach(value => {
+                let cell = row.insertCell();
+                cell.appendChild(document.createTextNode(value));
+            });
+        });
+    }
+
+   
+    window.addEventListener('load', updateTable);
+</script>
+
+</body>
+</html>

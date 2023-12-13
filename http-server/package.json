@@ -1,0 +1,19 @@
+{
+    "name": "http-server",
+    "version": "1.0.0",
+    "description": "A simple HTTP server for project registration",
+    "main": "index.js",
+    "scripts": {
+      "start": "node index.js"
+    },
+    "dependencies": {
+      "minimist": "^1.2.5"
+      
+    },
+    "author": "Your Name",
+    "license": "MIT",
+    "engines": {
+      "node": ">=12.0.0"
+    }
+  }
+   
