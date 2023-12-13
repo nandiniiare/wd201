@@ -1,51 +1,79 @@
-// todo.js
+/* eslint-disable no-undef */
 const todoList = () => {
   const all = [];
-  
   const add = (todoItem) => {
-    all.push(todoItem);
+      all.push(todoItem);
   };
-  
-  const markAsComplete = (title) => {
-    const foundItem = all.find(item => item.title === title);
-    if (foundItem) {
-      foundItem.completed = true;
-    } else {
-      console.error(`Todo item with title ${title} not found.`);
-    }
+  const markAsComplete = (index) => {
+      if (index >= 0 && index < all.length) {
+          all[index].completed = true;
+      } else {
+          throw new Error('Invalid index');
+      }
   };
 
   const overdue = () => {
-    const today = new Date();
-    return all.filter(item => new Date(item.dueDate) < today);
+      return all.filter(
+          (item) => item.dueDate < new Date().toLocaleDateString("en-CA")
+      );
   };
 
   const dueToday = () => {
-    const today = new Date();
-    return all.filter(item => new Date(item.dueDate).getDate() === today.getDate());
+      return all.filter(
+          (item) => item.dueDate === new Date().toLocaleDateString("en-CA")
+      );
   };
 
   const dueLater = () => {
-    const today = new Date();
-    return all.filter(item => new Date(item.dueDate).getDate() > today.getDate());
+      return all.filter(
+          (item) => item.dueDate > new Date().toLocaleDateString("en-CA")
+      );
   };
 
   const toDisplayableList = (list) => {
-    return list.map(item => {
-      const status = item.completed ? '[x]' : '[ ]';
-      return `${status} ${item.title} ${item.dueDate}`;
-    }).join('\n');
+      const dsl = [];
+      list.forEach((element) => {
+          if (element.dueDate === today) {
+              if (element.completed === true) {
+                  const a = "[x] " + element.title;
+                  dsl.push(a);
+              } else {
+                  const a = "[ ] " + element.title;
+                  dsl.push(a);
+              }
+          } else {
+              if (element.completed === true) {
+                  const a = "[x] " + element.title + " " + element.dueDate;
+                  dsl.push(a);
+              } else {
+                  const a = "[ ] " + element.title + " " + element.dueDate;
+                  dsl.push(a);
+              }
+          }
+      });
+      let g = "";
+      for (let i = 0; i < dsl.length; i++) {
+          // eslint-disable-next-line no-undef
+          obj = dsl[i];
+          if (i === 0) {
+              // eslint-disable-next-line no-undef
+              g = g + obj;
+          } else {
+              // eslint-disable-next-line no-undef
+              g = g + "\n" + obj;
+          }
+      }
+      return g;
   };
-  
 
   return {
-    all,
-    add,
-    markAsComplete,
-    overdue,
-    dueToday,
-    dueLater,
-    toDisplayableList,
+      all,
+      add,
+      markAsComplete,
+      overdue,
+      dueToday,
+      dueLater,
+      toDisplayableList,
   };
 };
 
