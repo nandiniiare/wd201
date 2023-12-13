@@ -3,21 +3,21 @@
     "development": {
       "username": "postgres",
       "password": "Surya@57",
-      "database": "todo_db_dev",
+      "database": "postgres",
       "host": "127.0.0.1",
       "dialect": "postgres"
     },
     "test": {
       "username": "postgres",
       "password": "Surya@57",
-      "database": "todo_db_test",
+      "database": "postgres",
       "host": "127.0.0.1",
       "dialect": "postgres"
     },
     "production": {
       "username": "postgres",
       "password": "Surya@57",
-      "database": "todo_db_prod",
+      "database": "postgres",
       "host": "127.0.0.1",
       "dialect": "postgres"
     }
