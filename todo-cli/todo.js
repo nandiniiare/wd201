@@ -11,7 +11,7 @@ const todoList = () => {
     if (foundItem) {
       foundItem.completed = true;
     } else {
-      console.error(Todo item with title ${title} not found.);
+      console.error(`Todo item with title ${title} not found.`);
     }
   };
 
@@ -33,9 +33,10 @@ const todoList = () => {
   const toDisplayableList = (list) => {
     return list.map(item => {
       const status = item.completed ? '[x]' : '[ ]';
-      return ${status} ${item.title} ${item.dueDate};
+      return `${status} ${item.title} ${item.dueDate}`;
     }).join('\n');
   };
+  
 
   return {
     all,
