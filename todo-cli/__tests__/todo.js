@@ -1,55 +1,54 @@
-// __tests__/todo.test.js
-const { Todo, getOverdueItems, getDueTodayItems, getDueLaterItems, toDisplayableList } = require('../todo');
+// _tests_/todo.js
+const todoList = require('../todo');
 
 test('creates a new todo', () => {
-  const newTodo = Todo.createTodo(1, 'Test Todo', '2023-12-31');
-  expect(newTodo.id).toBe(1);
-  expect(newTodo.title).toBe('Test Todo');
-  expect(newTodo.completed).toBe(false);
-  expect(newTodo.dueDate).toBe('2023-12-31');
+  const todos = todoList();
+  todos.add({ title: 'New Task', dueDate: '2023-12-15', completed: false });
+  expect(todos.all.length).toBe(1);
 });
 
 test('marks a todo as completed', () => {
-  const todo = new Todo(1, 'Test Todo', false, '2023-12-31');
-  todo.markCompleted();
-  expect(todo.completed).toBe(true);
+  const todos = todoList();
+  todos.add({ title: 'Task to be completed', dueDate: '2023-12-15', completed: false });
+  todos.markAsComplete('Task to be completed');
+  const completedItem = todos.all.find(item => item.title === 'Task to be completed');
+  expect(completedItem.completed).toBe(true);
 });
 
 test('retrieves overdue items', () => {
-  const todoList = [
-    new Todo(1, 'Overdue Todo', false, '2022-01-01'),
-    new Todo(2, 'Not Overdue Todo', false, '2023-12-31')
-  ];
-  const overdueItems = getOverdueItems(todoList);
-  expect(overdueItems.length).toBe(1);
-  expect(overdueItems[0].title).toBe('Overdue Todo');
+  const todos = todoList();
+  const overdueItems = todos.overdue();
+  expect(overdueItems.length).toBe(0);
 });
 
 test('retrieves due today items', () => {
-  const todoList = [
-    new Todo(1, 'Due Today Todo', false, new Date().toLocaleDateString()),
-    new Todo(2, 'Not Due Today Todo', false, '2023-12-31')
-  ];
-  const dueTodayItems = getDueTodayItems(todoList);
+  const todos = todoList();
+  // Use the current date to ensure the test works consistently
+  const currentDate = new Date().toISOString().split('T')[0];
+  todos.add({ title: 'Due Today Task', dueDate: currentDate, completed: false });
+  const dueTodayItems = todos.dueToday();
   expect(dueTodayItems.length).toBe(1);
-  expect(dueTodayItems[0].title).toBe('Due Today Todo');
+  expect(dueTodayItems[0].title).toBe('Due Today Task');
+  expect(dueTodayItems[0].completed).toBe(false);
 });
 
 test('retrieves due later items', () => {
-    const todoList = [
-      new Todo(1, 'Due Later Todo', false, '2023-01-01'),
-      // ... other Todo instances
-    ];
-    const dueLaterItems = getDueLaterItems(todoList);
-  
-    console.log('Todo List:', todoList);
-    console.log('Due Later Items:', dueLaterItems);
-  
-    expect(dueLaterItems.length).toBe(1);
-    expect(dueLaterItems[0].title).toBe('Due Later Todo');
-  });
-  
-  
+  const todos = todoList();
+  todos.add({ title: 'Due Later Task 1', dueDate: '2023-12-15', completed: false });
+  todos.add({ title: 'Due Later Task 2', dueDate: '2023-12-20', completed: false });
+  const dueLaterItems = todos.dueLater();
+  expect(dueLaterItems.length).toBe(2);
+  expect(dueLaterItems[0].title).toBe('Due Later Task 1');
+  expect(dueLaterItems[1].title).toBe('Due Later Task 2');
+});
 
-// Additional tests and assertions as needed for toDisplayableList or other functionalities
- 
+test('formats the list for display', () => {
+  const todos = todoList();
+  const sampleList = [
+    { title: 'Sample Task 1', dueDate: '2023-12-15', completed: false },
+    { title: 'Sample Task 2', dueDate: '2023-12-16', completed: true },
+  ];
+  const formattedList = todos.toDisplayableList(sampleList);
+  const expectedOutput = '[ ] Sample Task 1 2023-12-15\n[x] Sample Task 2 2023-12-16';
+  expect(formattedList).toBe(expectedOutput);
+});

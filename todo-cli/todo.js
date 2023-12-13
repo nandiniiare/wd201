@@ -1,57 +1,51 @@
 // todo.js
+const todoList = () => {
+  const all = [];
+  
+  const add = (todoItem) => {
+    all.push(todoItem);
+  };
+  
+  const markAsComplete = (title) => {
+    const foundItem = all.find(item => item.title === title);
+    if (foundItem) {
+      foundItem.completed = true;
+    } else {
+      console.error(Todo item with title ${title} not found.);
+    }
+  };
 
-class Todo {
-  constructor(id, title, completed, dueDate) {
-    this.id = id;
-    this.title = title;
-    this.completed = completed;
-    this.dueDate = dueDate;
-  }
+  const overdue = () => {
+    const today = new Date();
+    return all.filter(item => new Date(item.dueDate) < today);
+  };
 
-  static createTodo(id, title, dueDate) {
-    return new Todo(id, title, false, dueDate);
-  }
+  const dueToday = () => {
+    const today = new Date();
+    return all.filter(item => new Date(item.dueDate).getDate() === today.getDate());
+  };
 
-  markCompleted() {
-    this.completed = true;
-  }
-}
+  const dueLater = () => {
+    const today = new Date();
+    return all.filter(item => new Date(item.dueDate).getDate() > today.getDate());
+  };
 
-function getOverdueItems(todoList) {
-  const currentDate = new Date();
-  return todoList.filter(todo => !todo.completed && new Date(todo.dueDate) < currentDate);
-}
+  const toDisplayableList = (list) => {
+    return list.map(item => {
+      const status = item.completed ? '[x]' : '[ ]';
+      return ${status} ${item.title} ${item.dueDate};
+    }).join('\n');
+  };
 
-function getDueTodayItems(todoList) {
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
-  return todoList.filter(
-    todo => !todo.completed && new Date(todo.dueDate).getTime() === currentDate.getTime()
-  );
-}
-
-function getDueLaterItems(todoList) {
-  const currentDate = new Date();
-  currentDate.setHours(0, 0, 0, 0);
-  return todoList.filter(
-    todo => !todo.completed && new Date(todo.dueDate) > currentDate
-  );
-}
-
-function toDisplayableList(todoList) {
-  return todoList.map(todo => ({
-    id: todo.id,
-    title: todo.title,
-    completed: todo.completed,
-    dueDate: todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : null
-  }));
-}
-
-// Export relevant functions/classes
-module.exports = {
-  Todo,
-  getOverdueItems,
-  getDueTodayItems,
-  getDueLaterItems,
-  toDisplayableList
+  return {
+    all,
+    add,
+    markAsComplete,
+    overdue,
+    dueToday,
+    dueLater,
+    toDisplayableList,
+  };
 };
+
+module.exports = todoList;
