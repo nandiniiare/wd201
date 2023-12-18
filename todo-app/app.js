@@ -42,17 +42,23 @@ app.delete("/todos/:id", async (request, response) => {
     const todoId = request.params.id;
     try {
       const todo = await Todo.findByPk(todoId);
+  
       if (!todo) {
+        // If the todo doesn't exist, send a boolean response indicating failure.
         return response.json({ success: false });
       }
   
+      // If the todo exists, delete it.
       await todo.destroy();
-      return response.json({ success: true });
+  
+      // Fetch all todos after deletion and send the updated list.
+      const updatedTodos = await Todo.findAll();
+      return response.json(updatedTodos);
     } catch (error) {
       console.error(error);
       return response.status(500).json({ error: "Internal Server Error" });
     }
-
-});
+  });
+  
   
 module.exports = app;
