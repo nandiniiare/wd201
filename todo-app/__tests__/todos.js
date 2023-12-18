@@ -12,7 +12,7 @@ describe("Todo test suite",() => {
      afterAll( async () => {
         await db.sequelize.close();
         server.close();
-     })
+     });
      test("responds with json at /todos",async () => {
         const response = await agent.post('/todos').send({
             'title' : 'Buy milk',
@@ -44,5 +44,23 @@ describe("Todo test suite",() => {
         const parsedUpdateResponse = JSON.parse(markAsCompleted.text);
         expect(parsedUpdateResponse.completed).toBe(true);
         jest.setTimeout(5000);
+      });
+      test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
+        const response = await agent.post("/todos").send({
+          title: "Buy milk",
+          dueDate: new Date().toISOString(),
+          completed: false,
+        });
+    
+        const parsedResponse = JSON.parse(response.text);
+        const todoID = parsedResponse.id;
+    
+        expect(parsedResponse.completed).toBe(false);
+    
+        const deleteTodo = await agent.delete(`/todos/${todoID}`);
+        const parsedDeleteResponse = JSON.parse(deleteTodo.text);
+    
+        // Ensure the response is a boolean indicating success.
+        expect(typeof parsedDeleteResponse.success).toBe("boolean");
       });
 });
