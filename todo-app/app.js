@@ -38,6 +38,8 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
       return response.status(422).json(error);
    }
 });
+// app.js
+
 app.delete("/todos/:id", async (request, response) => {
     const todoId = request.params.id;
     try {
@@ -49,16 +51,16 @@ app.delete("/todos/:id", async (request, response) => {
       }
   
       // If the todo exists, delete it.
-      await todo.destroy();
+      await Todo.deleteTodoById(todoId);
   
-      // Fetch all todos after deletion and send the updated list.
-      const updatedTodos = await Todo.findAll();
-      return response.json(updatedTodos);
+      // Send a boolean response indicating success.
+      return response.json({ success: true });
     } catch (error) {
       console.error(error);
       return response.status(500).json({ error: "Internal Server Error" });
     }
   });
+  
   
   
 module.exports = app;
