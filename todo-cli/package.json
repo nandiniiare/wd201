@@ -9,7 +9,7 @@
     "pretest": "cross-env NODE_ENV=test npx sequelize-cli db:drop && cross-env NODE_ENV=test npx sequelize-cli db:create",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles",
     "prepare": "husky install"
-  },  
+  },
   "dependencies": {
     "dotenv": "^16.3.1",
     "mysql2": "^3.6.5",

@@ -20,9 +20,7 @@ describe("Todo test suite",() => {
             completed: false
         });
         expect(response.statusCode).toBe(200);
-        expect(response.header["content-type"]).toBe(
-            "application/json; charset=utf-8"
-        );
+        expect(response.header["content-type"]).toBe("application/json; charset=utf-8");
         const parsedResponse =JSON.parse(response.text);
         expect(parsedResponse.id).toBeDefined();
      });
@@ -38,29 +36,28 @@ describe("Todo test suite",() => {
     
         expect(parsedResponse.completed).toBe(false);
     
-        const markAsCompleted = await agent
-          .put(`/todos/${todoID}/markAsCompleted`)
-          .send();
+        const markAsCompleted = await agent.put(`/todos/${todoID}/markAsCompleted`).send();
         const parsedUpdateResponse = JSON.parse(markAsCompleted.text);
         expect(parsedUpdateResponse.completed).toBe(true);
         jest.setTimeout(5000);
       });
       test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
         const response = await agent.post("/todos").send({
-          title: "Buy milk",
-          dueDate: new Date().toISOString(),
-          completed: false,
+           title: "Buy milk",
+           dueDate: new Date().toISOString(),
+           completed: false,
         });
-    
+     
         const parsedResponse = JSON.parse(response.text);
         const todoID = parsedResponse.id;
-    
+     
         expect(parsedResponse.completed).toBe(false);
-    
+     
         const deleteTodo = await agent.delete(`/todos/${todoID}`);
         const parsedDeleteResponse = JSON.parse(deleteTodo.text);
-    
         // Ensure the response is a boolean indicating success.
         expect(typeof parsedDeleteResponse.success).toBe("boolean");
-      });
+        expect(parsedDeleteResponse.success).toBe(true);
+     });
+     
 });
