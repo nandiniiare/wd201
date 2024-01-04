@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     }
     markAsCompleted() {
       return this.update({ completed: true });
-    }        
+    } 
+    static deleteTodo(id) {
+      return this.destroy({ where: { id } });
+    }       
   }
   Todo.init({
     title: {

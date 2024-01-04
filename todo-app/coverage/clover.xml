@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1704398153002" clover="3.2.0">
-  <project timestamp="1704398153003" name="All files">
-    <metrics statements="154" coveredstatements="133" conditionals="19" coveredconditionals="12" methods="4" coveredmethods="4" elements="177" coveredelements="149" complexity="0" loc="154" ncloc="154" packages="2" files="3" classes="3"/>
+<coverage generated="1704399842138" clover="3.2.0">
+  <project timestamp="1704399842138" name="All files">
+    <metrics statements="157" coveredstatements="134" conditionals="19" coveredconditionals="12" methods="5" coveredmethods="4" elements="181" coveredelements="150" complexity="0" loc="157" ncloc="157" packages="2" files="3" classes="3"/>
     <package name="todo-app">
       <metrics statements="66" coveredstatements="46" conditionals="8" coveredconditionals="3" methods="0" coveredmethods="0"/>
       <file name="app.js" path="C:\wd201\todo-app\app.js">
@@ -75,7 +75,7 @@
       </file>
     </package>
     <package name="todo-app.models">
-      <metrics statements="88" coveredstatements="87" conditionals="11" coveredconditionals="9" methods="4" coveredmethods="4"/>
+      <metrics statements="91" coveredstatements="88" conditionals="11" coveredconditionals="9" methods="5" coveredmethods="4"/>
       <file name="index.js" path="C:\wd201\todo-app\models\index.js">
         <metrics statements="43" coveredstatements="42" conditionals="7" coveredconditionals="5" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -123,7 +123,7 @@
         <line num="43" count="1" type="stmt"/>
       </file>
       <file name="todo.js" path="C:\wd201\todo-app\models\todo.js">
-        <metrics statements="45" coveredstatements="45" conditionals="4" coveredconditionals="4" methods="4" coveredmethods="4"/>
+        <metrics statements="48" coveredstatements="46" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="4"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="cond" truecount="1" falsecount="0"/>
@@ -143,8 +143,8 @@
         <line num="17" count="1" type="stmt"/>
         <line num="18" count="1" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
-        <line num="20" count="1" type="stmt"/>
-        <line num="21" count="1" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
         <line num="22" count="1" type="stmt"/>
         <line num="23" count="1" type="stmt"/>
         <line num="24" count="1" type="stmt"/>
@@ -169,6 +169,9 @@
         <line num="43" count="1" type="stmt"/>
         <line num="44" count="1" type="stmt"/>
         <line num="45" count="1" type="stmt"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
       </file>
     </package>
   </project>

@@ -58,10 +58,10 @@ test("Deletes a todo with the given ID if it exists and sends a boolean response
 
    expect(parsedResponse.completed).toBe(false);
 
-   const deleteTodo = await agent.delete(`/todos/${todoID}`).send();
+   const deleteTodo = await agent.delete(`/todos/${todoID}`).send(); // Remove '/deleteTodo'
    expect(deleteTodo.statusCode).toBe(200);
    expect(deleteTodo.header["content-type"]).toBe("application/json; charset=utf-8");
    const parsedDeleteResponse = JSON.parse(deleteTodo.text);
-   expect(parsedDeleteResponse).toBe(true);
+   expect(parsedDeleteResponse.success).toBe(true); // Change to 'success'
 
 });

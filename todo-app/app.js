@@ -47,19 +47,19 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
 });
 
 app.delete("/todos/:id", async (request, response) => {
-   console.log("We have to delete a Todo with ID: ", request.params.id);
+   const todoId = request.params.id;
 
    try {
-      const todo = await Todo.findByPk(request.params.id);
+      const todo = await Todo.findByPk(todoId);
       if (!todo) {
-         response.send(false);
+         return response.status(404).json({ success: false, message: "Todo not found" });
       }
 
-      await todo.destroy();
-      response.send(true);
+      const deleted = await todo.destroy();
+      return response.json({ success: true, message: "Todo deleted successfully" });
    } catch (error) {
-      console.error("Error deleting",error);
-      response.status(500).json(false);
+      console.error(error);
+      return response.status(500).json({ success: false, message: "Internal Server Error" });
    }
 });
 
