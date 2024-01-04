@@ -58,7 +58,7 @@ test("Deletes a todo with the given ID if it exists and sends a boolean response
 
    expect(parsedResponse.completed).toBe(false);
 
-   const deleteTodo = await agent.delete(`/todos/${todoID}`);
+   const deleteTodo = await agent.delete(`/todos/${todoID}`).send();
    const parsedDeleteResponse = JSON.parse(deleteTodo.text);
 
    expect(typeof parsedDeleteResponse.success).toBe("boolean");
