@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate(models) { 
       // define association here
     }
     static addTodo({title, dueDate}){
@@ -18,12 +18,28 @@ module.exports = (sequelize, DataTypes) => {
     }        
   }
   Todo.init({
-    title: DataTypes.STRING,
-    dueDate: DataTypes.DATEONLY,
-    completed: DataTypes.BOOLEAN
-  }, {
+    title: {
+       type: DataTypes.STRING,
+       allowNull: false,
+       validate: {
+          notEmpty: true,
+       },
+    },
+    dueDate: {
+       type: DataTypes.DATEONLY,
+       allowNull: false,
+       validate: {
+          isDate: true,
+       },
+    },
+    completed: {
+       type: DataTypes.BOOLEAN,
+       defaultValue: false,
+    },
+ }, {
     sequelize,
     modelName: 'Todo',
-  });
+ });
+ 
   return Todo;  
 };

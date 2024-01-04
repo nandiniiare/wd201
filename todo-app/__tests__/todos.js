@@ -42,28 +42,28 @@ describe("Todo test suite",() => {
         jest.setTimeout(5000);
       });
       test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
-        const response = await agent.post("/todos").send({
-           title: "Buy milk",
-           dueDate: new Date().toISOString(),
-           completed: false,
-        });
-     
-        const parsedResponse = JSON.parse(response.text);
-        const todoID = parsedResponse.id;
-     
-        expect(parsedResponse.completed).toBe(false);
-     
-        const deleteTodo = await agent.delete(`/todos/${todoID}`);
-        const parsedDeleteResponse = JSON.parse(deleteTodo.text);
-        expect(parsedDeleteResponse).toHaveProperty("success");
-        expect(parsedDeleteResponse).toHaveProperty("message");
-        // Ensure the response is a boolean indicating success.
-        expect(typeof parsedDeleteResponse.success).toBe("boolean");
-        if (parsedDeleteResponse.success) {
-         expect(parsedDeleteResponse.message).toBe("Todo deleted successfully");
-     } else {
-         expect(parsedDeleteResponse.message).toBe("Todo not found");
-     }
-     });
-     
+         const response = await agent.post("/todos").send({
+            title: "Buy milk",
+            dueDate: new Date().toISOString(),
+            completed: false,
+         });
+      
+         const parsedResponse = JSON.parse(response.text);
+         const todoID = parsedResponse.id;
+      
+         expect(parsedResponse.completed).toBe(false);
+      
+         const deleteTodo = await agent.delete(`/todos/${todoID}`);
+         const parsedDeleteResponse = JSON.parse(deleteTodo.text);
+         
+         // Ensure the response is a boolean indicating success.
+         expect(typeof parsedDeleteResponse.success).toBe("boolean");
+      
+         if (parsedDeleteResponse.success) {
+            expect(parsedDeleteResponse.message).toBe("Todo deleted successfully");
+         } else {
+            expect(parsedDeleteResponse.message).toBe("Todo not found");
+         }
+      });
+      
 });

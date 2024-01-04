@@ -1,4 +1,3 @@
-const { request } = require('express');
 const express = require('express');
 const app = express();
 
@@ -37,26 +36,27 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
       console.error(error);
       return response.status(422).json(error);
    }
-});
+});                         
 
 app.delete("/todos/:id", async (request, response) => {
    const todoId = request.params.id;
-   if (!Number.isInteger(+todoId)) {
+   const isTodoIdValid = /^\d+$/.test(todoId);
+   if (!isTodoIdValid) {
       return response.status(400).json({ error: "Invalid todo ID" });
    }
-  
-try {
-   const todo = await Todo.findByPk(todoId);
-   if (!todo) {
-       return response.status(404).json({ success: false, message: "Todo not found" });
-   }
-   const deleted = await todo.destroy();
-   return response.json({ success: !!deleted, message: "Todo deleted successfully" });
-} catch (error) {
-   console.error(error);
-   return response.status(500).json({ success: false, message: "Internal Server Error" });
-}
 
+   try {
+      const todo = await Todo.findByPk(todoId);
+      if (!todo) {
+         return response.status(404).json({ success: false, message: "Todo not found" });
+      }
+      
+      const deleted = await todo.destroy();
+      return response.json({ success: !!deleted, message: "Todo deleted successfully" });
+   } catch (error) {
+      console.error(error);
+      return response.status(500).json({ success: false, message: "Internal Server Error" });
+   }
 });
 
 module.exports = app;
