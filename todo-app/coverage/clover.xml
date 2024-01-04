@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1704384996186" clover="3.2.0">
-  <project timestamp="1704384996186" name="All files">
-    <metrics statements="129" coveredstatements="110" conditionals="18" coveredconditionals="12" methods="4" coveredmethods="4" elements="151" coveredelements="126" complexity="0" loc="129" ncloc="129" packages="2" files="3" classes="3"/>
+<coverage generated="1704390340340" clover="3.2.0">
+  <project timestamp="1704390340340" name="All files">
+    <metrics statements="134" coveredstatements="113" conditionals="19" coveredconditionals="12" methods="4" coveredmethods="4" elements="157" coveredelements="129" complexity="0" loc="134" ncloc="134" packages="2" files="3" classes="3"/>
     <package name="todo-app">
-      <metrics statements="57" coveredstatements="39" conditionals="7" coveredconditionals="3" methods="0" coveredmethods="0"/>
+      <metrics statements="62" coveredstatements="42" conditionals="8" coveredconditionals="3" methods="0" coveredmethods="0"/>
       <file name="app.js" path="C:\wd201\todo-app\app.js">
-        <metrics statements="57" coveredstatements="39" conditionals="7" coveredconditionals="3" methods="0" coveredmethods="0"/>
+        <metrics statements="62" coveredstatements="42" conditionals="8" coveredconditionals="3" methods="0" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -49,20 +49,25 @@
         <line num="41" count="1" type="stmt"/>
         <line num="42" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="43" count="1" type="stmt"/>
-        <line num="44" count="1" type="stmt"/>
-        <line num="45" count="1" type="stmt"/>
-        <line num="46" count="1" type="cond" truecount="0" falsecount="1"/>
-        <line num="47" count="0" type="stmt"/>
-        <line num="48" count="0" type="stmt"/>
+        <line num="44" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="48" count="1" type="stmt"/>
         <line num="49" count="1" type="stmt"/>
-        <line num="50" count="1" type="stmt"/>
-        <line num="51" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="50" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="51" count="0" type="stmt"/>
         <line num="52" count="0" type="stmt"/>
-        <line num="53" count="0" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="55" count="1" type="stmt"/>
-        <line num="56" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="55" count="1" type="cond" truecount="0" falsecount="1"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
       </file>
     </package>
     <package name="todo-app.models">

@@ -41,17 +41,22 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
 
 app.delete("/todos/:id", async (request, response) => {
    const todoId = request.params.id;
-   try {
-      const todo = await Todo.findByPk(todoId);
-      if (!todo) {
-         return response.status(404).json({ error: "Todo not found" });
-      }
-      const deleted = await todo.destroy();
-      return response.json({ success: !!deleted });
-   } catch (error) {
-      console.error(error);
-      return response.status(500).json({ error: "Internal Server Error" });
+   if (!Number.isInteger(+todoId)) {
+      return response.status(400).json({ error: "Invalid todo ID" });
    }
+  
+try {
+   const todo = await Todo.findByPk(todoId);
+   if (!todo) {
+       return response.status(404).json({ success: false, message: "Todo not found" });
+   }
+   const deleted = await todo.destroy();
+   return response.json({ success: !!deleted, message: "Todo deleted successfully" });
+} catch (error) {
+   console.error(error);
+   return response.status(500).json({ success: false, message: "Internal Server Error" });
+}
+
 });
 
 module.exports = app;

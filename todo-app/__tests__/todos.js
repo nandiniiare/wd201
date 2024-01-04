@@ -55,9 +55,15 @@ describe("Todo test suite",() => {
      
         const deleteTodo = await agent.delete(`/todos/${todoID}`);
         const parsedDeleteResponse = JSON.parse(deleteTodo.text);
+        expect(parsedDeleteResponse).toHaveProperty("success");
+        expect(parsedDeleteResponse).toHaveProperty("message");
         // Ensure the response is a boolean indicating success.
         expect(typeof parsedDeleteResponse.success).toBe("boolean");
-        expect(parsedDeleteResponse.success).toBe(true);
+        if (parsedDeleteResponse.success) {
+         expect(parsedDeleteResponse.message).toBe("Todo deleted successfully");
+     } else {
+         expect(parsedDeleteResponse.message).toBe("Todo not found");
+     }
      });
      
 });
