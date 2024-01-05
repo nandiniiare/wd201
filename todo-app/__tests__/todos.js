@@ -4,7 +4,7 @@ const app = require("../app");
 const { Todo } = require("../models");
 
 let server, agent;
-
+describe("Todo Application", function () {
 beforeAll(async () => {
    await db.sequelize.sync({ force: true });
    server = app.listen(3000, () => {});
@@ -60,21 +60,22 @@ test("Fetches all todos in the database using /todos endpoint", async () => {
    // You can add more specific assertions based on your actual data model.
 });
 test("Deletes a todo with the given ID if it exists and sends a boolean response", async () => {
-   const response = await agent.post("/todos").send({
-      title: "Buy milk",
-      dueDate: new Date().toISOString(),
-      completed: false,
+   // Create a new todo to delete
+   const newTodo = await agent.post("/todos").send({
+     title: "Delete me",
+     dueDate: new Date().toISOString(),
+     completed: false,
    });
+   const parsedTodo = JSON.parse(newTodo.text);
+   const todoIDToDelete = parsedTodo.id;
 
-   const parsedResponse = JSON.parse(response.text);
-   const todoID = parsedResponse.id;
-   expect(parsedResponse.id).toBeDefined();
+   // Attempt to delete the created todo
+   const deleteResponse = await agent.delete(`/todos/${todoIDToDelete}`).send();
 
-   const deleteTodo = await agent.delete(`/todos/${todoID}`).send();
-   expect(deleteTodo.statusCode).toBe(200);
-   expect(deleteTodo.header["content-type"]).toBe("application/json; charset=utf-8");
-   const parsedDeleteResponse = JSON.parse(deleteTodo.text);
+   // Check if deletion was successful
+   expect(deleteResponse.statusCode).toBe(200);
+   expect(deleteResponse.header["content-type"]).toBe("application/json; charset=utf-8");
+   const parsedDeleteResponse = JSON.parse(deleteResponse.text);
    expect(parsedDeleteResponse).toBe(true);
+  });
 });
-
-
