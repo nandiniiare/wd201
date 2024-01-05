@@ -13,9 +13,9 @@
     "migrate": "sequelize db:migrate"
   },
   "lint-staged": {
-    "*.js": [
+    "src/**/*.js": [
       "eslint",
-      "prettier --write ."
+      "prettier --write"
     ]
   },
   "author": "Nandini",
