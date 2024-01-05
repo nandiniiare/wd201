@@ -11,7 +11,7 @@
     "sequelize": "sequelize",
     "sequelize-cli": "sequelize-cli",
     "migrate": "sequelize db:migrate"
-  },
+  },  
   "lint-staged": {
     "*.js": [
       "eslint",
