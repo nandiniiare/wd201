@@ -42,7 +42,7 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
       return response.json(updatedTodo);
    } catch (error) {
       console.error(error);
-      return response.status(500).json({ success: false, message: "Internal Server Error" });
+      return response.status(500).jdxson({ success: false, message: "Internal Server Error" });
    }
 });
 
