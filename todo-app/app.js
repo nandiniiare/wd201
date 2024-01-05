@@ -56,11 +56,13 @@ app.delete("/todos/:id", async (request, response) => {
       }
 
       const deleted = await todo.destroy();
-      return response.json({ success: true, message: "Todo deleted successfully" });
+      return response.json(deleted ? true : false);
    } catch (error) {
       console.error(error);
       return response.status(500).json({ success: false, message: "Internal Server Error" });
    }
 });
+
+
 
 module.exports = app;
