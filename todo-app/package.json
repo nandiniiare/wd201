@@ -7,11 +7,16 @@
     "start:prod": "node index.js",
     "pretest": "cross-env NODE_ENV=test npx sequelize-cli db:drop && cross-env NODE_ENV=test npx sequelize-cli db:create",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles",
-    "prepare": "husky install",
+    "prepare": "cd .. husky install",
     "sequelize": "sequelize",
     "sequelize-cli": "sequelize-cli",
     "migrate": "sequelize db:migrate"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },  
   "lint-staged": {
     "src/**/*.js": [
       "eslint",
