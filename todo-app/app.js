@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+const PORT = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const path = require("path");
 app.use(bodyParser.json());
@@ -9,7 +9,7 @@ const { Todo } = require("./models");
 app.set("view engine","ejs");
 
 app.get("/", async (request,response) => {
-   const allTodos = await Todo.getTodos();
+   const allTodos = await Todo.findAll();
    if( request.accepts('html')){
       response.render('index', {
          allTodos
