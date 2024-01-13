@@ -1,6 +1,41 @@
 <!-- views/todos.ejs -->
 
 <h2>Todo List</h2>
+
+<!-- Section: Overdue -->
+<section>
+  <h5>Overdue</h5>
+  <ul>
+    <% todos.filter(todo => todo.status === 'overdue').forEach(todo => { %>
+      <li><%= todo.title %></li>
+    <% }); %>
+  </ul>
+  <p id="count-overdue">Count: <%= todos.filter(todo => todo.status === 'overdue').length %></p>
+</section>
+
+<!-- Section: Due Today -->
+<section>
+  <h5>Due Today</h5>
+  <ul>
+    <% todos.filter(todo => todo.status === 'dueToday').forEach(todo => { %>
+      <li><%= todo.title %></li>
+    <% }); %>
+  </ul>
+  <p id="count-due-today">Count: <%= todos.filter(todo => todo.status === 'dueToday').length %></p>
+</section>
+
+<!-- Section: Due Later -->
+<section>
+  <h5>Due Later</h5>
+  <ul>
+    <% todos.filter(todo => todo.status === 'dueLater').forEach(todo => { %>
+      <li><%= todo.title %></li>
+    <% }); %>
+  </ul>
+  <p id="count-due-later">Count: <%= todos.filter(todo => todo.status === 'dueLater').length %></p>
+</section>
+
+<!-- Original Table -->
 <table>
   <thead>
     <tr>
