@@ -8,18 +8,45 @@ app.use(bodyParser.json());
 const { Todo } = require("./models");
 app.set("view engine","ejs");
 
-app.get("/", async (request,response) => {
-   const allTodos = await Todo.findAll();
-   if( request.accepts('html')){
-      response.render('index', {
-         allTodos
-      });
-   }else{
-      response.json({
-         allTodos
-      })
+app.get("/", async (request, response) => {
+   try {
+       const allTodos = await Todo.findAll();
+
+       // Filter overdue todos
+       const overdue = allTodos.filter(todo => todo.dueDate < new Date() && !todo.completed);
+
+       // Filter due today todos
+       const today = new Date();
+       today.setHours(0, 0, 0, 0);
+       const duetoday = allTodos.filter(todo => todo.dueDate >= today && todo.dueDate < new Date(today.getTime() + 24 * 60 * 60 * 1000));
+
+       // Filter due later todos
+       const later = allTodos.filter(todo => todo.dueDate > new Date(today.getTime() + 24 * 60 * 60 * 1000));
+
+       if (request.accepts('html')) {
+           // Render HTML view
+           response.render('index', {
+               title: 'Your Title',
+               data: allTodos,
+               overdue,
+               duetoday,
+               duelater: later, // Include the due later todos
+           });
+       } else {
+           // Send JSON response
+           response.json({
+               allTodos,
+               overdue,
+               duetoday,
+               duelater: later,
+           });
+       }
+   } catch (error) {
+       console.error(error);
+       response.status(500).send('Internal Server Error');
    }
 });
+
 app.use(express.static(path.join(__dirname,'public')));
 app.get("/todos", async (request, response) => {
    try {
