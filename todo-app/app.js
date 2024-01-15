@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const path = require("path");
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
 
 const { Todo } = require("./models");
 app.set("view engine","ejs");
@@ -46,10 +47,10 @@ app.get("/", async (request, response) => {
        response.status(500).send('Internal Server Error');
    }
 });
-
 app.use(express.static(path.join(__dirname,'public')));
 app.get("/todos", async (request, response) => {
    try {
+      console.log('Processing list of all Todos ...')
       const todos = await Todo.findAll();
       return response.json(todos);
    } catch (error) {
@@ -60,17 +61,24 @@ app.get("/todos", async (request, response) => {
 
 app.post("/todos", async (request, response) => {
    try {
+      // Validation: Check if title and dueDate are present
+      const { title, dueDate } = request.body;
+      if (!title || !dueDate) {
+         return response.status(422).json({ error: "Title and dueDate are required" });
+      }
+
       const todo = await Todo.addTodo({
-         title: request.body.title,
-         dueDate: request.body.dueDate,
+         title,
+         dueDate,
          completed: false
       });
-      return response.json(todo);
+      return response.redirect("/");
    } catch (error) {
       console.error(error);
-      return response.status(422).json({ error: "Unprocessable Entity" });
+      return response.status(500).json({ error: "Internal Server Error" });
    }
 });
+
 
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
    const todoId = request.params.id;
