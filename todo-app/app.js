@@ -4,20 +4,25 @@ const PORT = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
 const path = require("path");
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false}));
 
 const { Todo } = require("./models");
 app.set("view engine","ejs");
 
 app.get("/", async (request,response) => {
-   const allTodos = await Todo.findAll();
-   if( request.accepts('html')){
-      response.render('index', {
-         allTodos
+   try {
+      const overdue = await Todo.overdue();
+      const dueToday = await Todo.dueToday();
+      const dueLater = await Todo.dueLater();   
+      response.render("index", {
+         title: "Todo application",
+         overdue,
+         dueToday,
+         dueLater,   
       });
-   }else{
-      response.json({
-         allTodos
-      })
+   }catch (error) {
+      console.error(error);
+      response.status(500).send('Internal Server Error');
    }
 });
 app.use(express.static(path.join(__dirname,'public')));
@@ -32,13 +37,15 @@ app.get("/todos", async (request, response) => {
 });
 
 app.post("/todos", async (request, response) => {
+   console.log("Creating a todo", request.body);
    try {
-      const todo = await Todo.addTodo({
+      console.log(request.body);
+      await Todo.addTodo({
          title: request.body.title,
          dueDate: request.body.dueDate,
          completed: false
       });
-      return response.json(todo);
+      return response.redirect("/");
    } catch (error) {
       console.error(error);
       return response.status(422).json({ error: "Unprocessable Entity" });
@@ -46,6 +53,7 @@ app.post("/todos", async (request, response) => {
 });
 
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
+   console.log("We have to update the todo with ID:", request.params.id);
    const todoId = request.params.id;
 
    try {
