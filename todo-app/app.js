@@ -1,5 +1,5 @@
 const express = require('express');
-const csrf = require("csurf");
+var csrf =require("csurf");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
@@ -8,7 +8,7 @@ const path = require("path");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false}));
 app.use(cookieParser("shh! some secret string"));
-app.use(csrf({ cookie: true }));
+app.use(csrf({ cookie: true }))
 
 const { Todo } = require("./models");
 const { error } = require('console');
@@ -61,35 +61,42 @@ app.post("/todos", async (request, response) => {
    }
 });
 
-app.put("/todos/:id/markAsCompleted", async (request, response) => {
-   console.log("Received markAsCompleted request");
-   const todoId = request.params.id;
+app.put('/todos/:id', async (req, res) => {
    try {
-      const updatedTodo = await Todo.findByPk(todoId);
-      if (updatedTodo) {
-         updatedTodo.completed = true;
-         await updatedTodo.save();
-         console.log("Marked as completed successfully");
-         return response.json(updatedTodo);
-      } else {
-         console.log("Todo not found");
-         return response.status(404).json({ error: "Todo not found" });
-      }
+     const todoId = req.params.id;
+     const { completed } = req.body;
+ 
+     const todo = await Todo.findByPk(todoId);
+ 
+     if (!todo) {
+       return res.status(404).json({ error: 'Todo not found' });
+     }
+ 
+     await todo.setCompletionStatus(completed);
+ 
+     res.status(200).json({ message: 'Todo updated successfully' });
    } catch (error) {
-      console.error("Error processing markAsCompleted:", error);
-      return response.status(500).json({ error: "Internal Server Error" });
+     console.error(error);
+     res.status(500).json({ error: 'Internal Server Error' });
    }
-});
-
-app.delete("/todos/:id", async function (request, response) {
-   console.log("Received delete request");
+ });
+ app.delete('/todos/:id', async (req, res) => {
    try {
-      await Todo.remove(request.params.id);
-      console.log("Deleted successfully");
-      return response.json({ success: true });
+     const todoId = req.params.id;
+ 
+     const todo = await Todo.findByPk(todoId);
+ 
+     if (!todo) {
+       return res.status(404).json({ error: 'Todo not found' });
+     }
+ 
+     await todo.destroy();
+ 
+     res.status(204).end(); // No content
    } catch (error) {
-      console.error("Error processing delete:", error);
-      return response.status(422).json(error);
+     console.error(error);
+     res.status(500).json({ error: 'Internal Server Error' });
    }
-});
+ });
+ 
  module.exports = app;

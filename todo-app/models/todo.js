@@ -59,6 +59,12 @@ module.exports = (sequelize, DataTypes) => {
       return this.destroy({ where: { id } });
     }       
   }
+  // Add this method to the Todo model
+Todo.prototype.setCompletionStatus = async function (status) {
+  this.completed = status;
+  await this.save();
+};
+
   Todo.init({
     title: {
        type: DataTypes.STRING,
