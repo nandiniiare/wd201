@@ -1,10 +1,14 @@
 const express = require('express');
+const csrf = require("csurf");
 const app = express();
 const PORT = process.env.PORT || 3000;
 const bodyParser = require('body-parser');
+var cookieParser = require("cookie-parser");
 const path = require("path");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false}));
+app.use(cookieParser("shh! some secret string"));
+app.use(csrf({ cookie: true }));
 
 const { Todo } = require("./models");
 const { error } = require('console');
@@ -19,7 +23,8 @@ app.get("/", async (request,response) => {
             title: "Todo application",
             overdue,
             dueToday,
-            dueLater,   
+            dueLater,
+            csrfToken: request.csrfToken(), 
          });
       }else{
          response.json({
@@ -57,30 +62,34 @@ app.post("/todos", async (request, response) => {
 });
 
 app.put("/todos/:id/markAsCompleted", async (request, response) => {
-   console.log("We have to update the todo with ID:", request.params.id);
+   console.log("Received markAsCompleted request");
    const todoId = request.params.id;
    try {
       const updatedTodo = await Todo.findByPk(todoId);
       if (updatedTodo) {
-         todo.completed = true; // Set to true for completed, adjust as needed
+         updatedTodo.completed = true;
          await updatedTodo.save();
+         console.log("Marked as completed successfully");
          return response.json(updatedTodo);
-      }else {
-         return response.status(404).json(error);
-       }
+      } else {
+         console.log("Todo not found");
+         return response.status(404).json({ error: "Todo not found" });
+      }
    } catch (error) {
-      console.log(error);
-      return response.status(500).json(error);
+      console.error("Error processing markAsCompleted:", error);
+      return response.status(500).json({ error: "Internal Server Error" });
    }
 });
 
 app.delete("/todos/:id", async function (request, response) {
-   console.log("We have to delete a Todo with ID: ", request.params.id);
+   console.log("Received delete request");
    try {
-     await Todo.remove(request.params.id);
-     return response.json({success: true});
+      await Todo.remove(request.params.id);
+      console.log("Deleted successfully");
+      return response.json({ success: true });
    } catch (error) {
-     return response.status(422).json(error);
+      console.error("Error processing delete:", error);
+      return response.status(422).json(error);
    }
- });
+});
  module.exports = app;

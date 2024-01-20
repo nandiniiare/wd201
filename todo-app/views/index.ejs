@@ -2,49 +2,64 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content="<%= csrfToken %>"/>
     <title>To-do Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./css/styles.css" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet"/>
     <script>
-        function updateTodo(id) {
-            fetch(`/todos/${id}/markAsCompleted`, {
-                method: "put",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            .then((res) => {
-                if (res.ok) {
-                    window.location.reload();
-                }
-            })
-            .catch((err) => console.error(err));
-        }
-        function deleteTodo(id) {
-            fetch(`/todos/${id}`, {
-                method: "delete",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            .then((res) => {
-                if (res.ok) {
-                    window.location.reload();
-                }
-            })
-            .catch((err) => console.error(err));
-        }
-    </script>
-    
-</head>
+    var token = document
+        .querySelector('meta[name = "csrf-token"]')
+        .getAttribute("content");
 
+    async function updateTodo(id) {
+        const response = await fetch(`/todos/${id}/markAsCompleted`, {
+            method: "put",
+            headers: {
+                "Content-Type": "application/json",
+                "csrf-token": token,// Use "csrf-token" here
+            },
+            body: JSON.stringify({
+                "csrf-token": token,// other data
+            })
+        })
+        .then((res) => {
+            if (res.ok) {
+                console.log("Marked as completed successfully");
+                window.location.reload();
+            }
+        })
+        .catch((err) => console.error("Error marking as completed:", err));
+    }
+
+    async function deleteTodo(id) {
+        const response = await fetch(`/todos/${id}`, {
+            method: "delete",
+            headers: {
+                "Content-Type": "application/json",
+                "csrf-token": token, // Use "csrf-token" here
+            },
+            body: JSON.stringify({
+                "csrf-token": token,// other data
+            })
+        })
+        .then((res) => {
+            if (res.ok) {
+                console.log("Deleted successfully");
+                window.location.reload();
+            }
+        })
+        .catch((err) => console.error("Error deleting:", err));
+    }
+</script>
+</head>
 <body>
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
             <%- include('header.ejs') %>
             <form action="/todos" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
                 <div class="flex gap-2 py-4">
                     <div class="flex-auto">
                         <input type="text" name="title" placeholder="What's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
