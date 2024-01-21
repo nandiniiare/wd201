@@ -14,7 +14,6 @@ const { Todo } = require("./models");
 const { error } = require('console');
 app.set("view engine","ejs");
 
-
 app.get("/", async (request,response) => {
       const overdue = await Todo.overdue();
       const dueToday = await Todo.dueToday();
@@ -24,7 +23,7 @@ app.get("/", async (request,response) => {
             title: "Todo application",
             overdue,
             dueToday,
-            dueLater,
+            dueLater,
             csrfToken: request.csrfToken(), 
          });
       }else{
@@ -46,31 +45,22 @@ app.get("/todos", async (request, response) => {
    }
 });
 
-// In your server route for creating todos
-app.post('/todos', async (req, res) => {
-  try {
-    const { title, dueDate } = req.body;
-
-    // Client-side validation
-    if (!title || !dueDate) {
-      return res.status(400).json({ error: 'Title and Due Date are required' });
-    }
-
-    const newTodo = await Todo.create({
-      title,
-      dueDate,
-      completed: false,
-    });
-
-    res.status(201).json(newTodo);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+app.post("/todos", async (request, response) => {
+   console.log("Creating a todo", request.body);
+   try {
+      console.log(request.body);
+      await Todo.addTodo({
+         title: request.body.title,
+         dueDate: request.body.dueDate,
+         completed: false
+      });
+      return response.redirect("/");
+   } catch (error) {
+      console.error(error);
+      return response.status(422).json({ error: "Unprocessable Entity" });
+   }
 });
 
-
-// In your Express server
 app.put('/todos/:id', async (req, res) => {
    try {
      const todoId = req.params.id;
@@ -90,7 +80,6 @@ app.put('/todos/:id', async (req, res) => {
      res.status(500).json({ error: 'Internal Server Error' });
    }
  });
- 
  app.delete('/todos/:id', async (req, res) => {
    try {
      const todoId = req.params.id;

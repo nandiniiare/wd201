@@ -22,7 +22,6 @@
             },
             body: JSON.stringify({
                 "csrf-token": token,// other data
-                completed: !currentCompletedStatus
             })
         })
         .then((res) => {
@@ -33,62 +32,10 @@
         })
         .catch((err) => console.error("Error marking as completed:", err));
     }
-    // Example function to mark a todo as completed
-async function markAsCompleted(id) {
-  try {
-    const response = await fetch(`/todos/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ completed: true }),
-    });
-
-    if (response.ok) {
-      // Handle success (perhaps update UI)
-    } else {
-      // Handle error (display error message)
-      console.error('Failed to mark todo as completed');
-    }
-  } catch (error) {
-    console.error('Error marking todo as completed:', error);
-  }
-}
-
-// Example usage
-const overdueItemId = overdueTodos;
-markAsCompleted(overdueItemId);
-// Example function to toggle completion status
-async function toggleCompletion(todoId, currentCompletedStatus) {
-  try {
-    const response = await fetch(`/todos/${todoId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ completed: !currentCompletedStatus }),
-    });
-
-    if (response.ok) {
-      // Handle success (perhaps update UI)
-    } else {
-      // Handle error (display error message)
-      console.error('Failed to toggle todo completion status');
-    }
-  } catch (error) {
-    console.error('Error toggling todo completion status:', error);
-  }
-}
-
-// Example usage
-const itemIdToToggle = updateTodo;
-const currentCompletedStatus = data[i].completed;
-toggleCompletion(itemIdToToggle, currentCompletedStatus);
-
 
     async function deleteTodo(id) {
         const response = await fetch(`/todos/${id}`, {
-            method: "DELETE",
+            method: "delete",
             headers: {
                 "Content-Type": "application/json",
                 "csrf-token": token, // Use "csrf-token" here
