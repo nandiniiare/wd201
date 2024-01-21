@@ -60,7 +60,13 @@ module.exports = (sequelize, DataTypes) => {
         order: [["id", "ASC"]],
       });
     }
-    
+    static async remove(id){
+      return this.destroy({
+        where: {
+            id,
+        },
+      });
+    }
     markAsCompleted() {
       return this.update({ completed: true });
     } 
@@ -101,7 +107,58 @@ Todo.prototype.setCompletionStatus = async function (status) {
     sequelize,
     modelName: 'Todo',
  });
- 
+ Todo.overdue = async () => {
+  try {
+    const today = new Date();
+    const overdueTodos = await Todo.findAll({
+      where: {
+        dueDate: {
+          [Sequelize.Op.lt]: today, // Get todos with dueDate less than today
+        },
+        completed: false, // Only include incomplete todos
+      },
+    });
+    return overdueTodos;
+  } catch (error) {
+    throw error;
+  }
+};
+
+Todo.dueToday = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
+    const dueTodayTodos = await Todo.findAll({
+      where: {
+        dueDate: {
+          [Sequelize.Op.eq]: today, // Get todos with dueDate equal to today
+        },
+        completed: false,
+      },
+    });
+    return dueTodayTodos;
+  } catch (error) {
+    throw error;
+  }
+};
+
+Todo.dueLater = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueLaterTodos = await Todo.findAll({
+      where: {
+        dueDate: {
+          [Sequelize.Op.gt]: today, // Get todos with dueDate greater than today
+        },
+        completed: false,
+      },
+    });
+    return dueLaterTodos;
+  } catch (error) {
+    throw error;
+  }
+};
  
   return Todo;  
 };

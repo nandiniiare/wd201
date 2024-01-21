@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="<%= csrfToken %>"/>
     <title>To-do Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/styles.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>Nandini Todo App</title>
     <script>
     var token = document
         .querySelector('meta[name = "csrf-token"]')
         .getAttribute("content");
 
-    const updateTodo = (id) => {
+        const updateTodo = (id) => {
     const checkbox = document.querySelector(`#checkbox-${id}`);
     const completed = checkbox.checked;
 
@@ -64,7 +66,7 @@
         <div class="col-start-3 col-span-2">
             <%- include('header.ejs') %>
             <form action="/todos" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
                 <div class="flex gap-2 py-4">
                     <div class="flex-auto">
                         <input type="text" name="title" placeholder="What's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />

@@ -51,33 +51,30 @@ app.get("/todos", async (_request, response) => {
     return response.status(422).json(error);
   }
 });
-
 app.get("/todos/:id", async (request, response) => {
-  try {
-    const todoId = request.params.id;
-    const todo = await Todo.findByPk(todoId);
-
-    if (!todo) {
-      return response.status(404).json({ error: 'Todo not found' });
-    }
-
-    return response.json(todo);
-  } catch (error) {
-    console.error(error);
-    return response.status(500).json({ error: "Internal Server Error" });
-  }
+   try {
+      const todos = await Todo.findAll(request.params.id);
+      return response.json(todos);
+   } catch (error) {
+      console.error(error);
+      return response.status(500).json({ error: "Internal Server Error" });
+   }
 });
-
 
 app.post("/todos", async (request, response) => {
    console.log("Creating a todo", request.body);
+   const dueDate = request.body.dueDate;
+   if (!dueDate) {
+    // If dueDate is not provided, respond with an error
+    return response.status(400).json({ error: 'Due date is required for creating a todo.' });
+  }
    try {
       await Todo.addTodo({
          title: request.body.title,
          dueDate: request.body.dueDate,
          completed: false
       });
-      return response.status(201).json({ message: 'Todo created successfully' });
+      return response.redirect("/");
    } catch (error) {
       console.error(error);
       return response.status(422).json(error);
@@ -95,22 +92,21 @@ app.put('/todos/:id', async (req, res) => {
     const todo = await Todo.findByPk(todoId);
 
     if (!todo) {
-      return res.status(404).json({ error: 'Todo not found' });
+      return response.status(404).json({ error: 'Todo not found' });
     }
 
-    // Use the setCompletionStatus method to update completion status
-    await todo.setCompletionStatus(completed);
+    // Update the completion status
+    await todo.update({ completed });
 
     // Fetch the updated todo to get the latest data
     const updatedTodo = await Todo.findByPk(todoId);
 
-    res.status(200).json({ message: 'Todo updated successfully', todo: updatedTodo });
+    response.status(200).json({ message: 'Todo updated successfully', todo: updatedTodo });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
  app.delete('/todos/:id', async (req, res) => {
   
