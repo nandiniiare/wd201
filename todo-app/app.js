@@ -13,39 +13,7 @@ app.use(csrf({ cookie: true }))
 const { Todo } = require("./models");
 const { error } = require('console');
 app.set("view engine","ejs");
-const createSampleItems = async () => {
-  try {
-      // Create sample due today item
-      await Todo.create({
-          title: 'Sample Due Today Item',
-          dueDate: new Date(),
-          completed: false,
-      });
 
-      // Create sample due later item
-      await Todo.create({
-          title: 'Sample Due Later Item',
-          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Due after 7 days
-          completed: false,
-      });
-
-      // Create sample overdue item
-      await Todo.create({
-          title: 'Sample Overdue Item',
-          dueDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Due 7 days ago
-          completed: false,
-      });
-
-      console.log('Sample items created successfully');
-  } catch (error) {
-      console.error('Error creating sample items:', error);
-  }
-};
-app.use(async (req, res, next) => {
-  // You can add more conditions to run this only once, such as checking if sample items exist
-  await createSampleItems();
-  next();
-});
 
 app.get("/", async (request,response) => {
       const overdue = await Todo.overdue();
