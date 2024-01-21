@@ -1,5 +1,6 @@
 'use strict';
 const {Model} = require('sequelize');
+const { Op } = require('sequelize');
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'postgres', // or 'postgres' or 'sqlite' or 'mssql'
@@ -22,27 +23,41 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
+          completed: false,
         },
+        order: [["id", "ASC"]],
       });
     }
     static async dueLater(){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
+          completed: false,
         },
+        order: [["id", "ASC"]],
       });
     }
     static async dueToday(){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
+          completed: false,
         },
+        order: [["id", "ASC"]],
+      });
+    }
+     static completedItems() {
+      return this.findAll({
+        where: {
+          completed: true,
+        },
+        order: [["id", "ASC"]],
       });
     }
     static async remove(id){
@@ -57,8 +72,12 @@ module.exports = (sequelize, DataTypes) => {
     } 
     static deleteTodo(id) {
       return this.destroy({ where: { id } });
+    }
+    static getTodos() {
+      return this.findAll({ order: [["id", "ASC"]] });
     }       
   }
+  
   // Add this method to the Todo model
 Todo.prototype.setCompletionStatus = async function (status) {
   this.completed = status;

@@ -8,40 +8,47 @@
     <title>To-do Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/styles.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Nandini Todo App</title>
     <script>
     var token = document
         .querySelector('meta[name = "csrf-token"]')
         .getAttribute("content");
 
-    async function updateTodo(id) {
-        const response = await fetch(`/todos/${id}/markAsCompleted`, {
-            method: "put",
-            headers: {
-                "Content-Type": "application/json",
-                "csrf-token": token,// Use "csrf-token" here
-            },
-            body: JSON.stringify({
-                "csrf-token": token,// other data
-            })
-        })
+        const updateTodo = (id) => {
+    const checkbox = document.querySelector(`#checkbox-${id}`);
+    const completed = checkbox.checked;
+
+    console.log(completed);
+
+    const requestOptions = {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "_csrf": token,
+            completed: completed,
+        }),
+    };
+
+    fetch(`/todos/${id}`, requestOptions)
         .then((res) => {
             if (res.ok) {
-                console.log("Marked as completed successfully");
                 window.location.reload();
             }
         })
-        .catch((err) => console.error("Error marking as completed:", err));
-    }
-
+        .catch((error) => {
+            console.log(error);
+        });
+};
     async function deleteTodo(id) {
         const response = await fetch(`/todos/${id}`, {
             method: "delete",
             headers: {
-                "Content-Type": "application/json",
-                "csrf-token": token, // Use "csrf-token" here
-            },
+                "Content-Type": "application/json"},
             body: JSON.stringify({
-                "csrf-token": token,// other data
+                "_csrf": token,// other data
             })
         })
         .then((res) => {
@@ -73,9 +80,10 @@
                 </div>
             </form>
             <div>
-                <%- include('todos.ejs', {title: "overdue", data: overdue}) %>
-                <%- include('todos.ejs', {title: "Due Today", data: dueToday}) %>
-                <%- include('todos.ejs', {title: "Due Later", data: dueLater}) %>
+                <%- include('todos.ejs', { title: "Overdue", data: overdue, ID:"count-overdue" }) %>
+                <%- include('todos.ejs', { title: "Due Today", data: dueToday, ID:"count-due-today" }) %>
+                <%- include('todos.ejs', { title: "Due Later", data: dueLater, ID:"count-due-later" }) %>
+                <%- include('todos.ejs', { title: "Completed Items", data: completedItems, ID:"count-completed" }) %>
             </div>
         </div>
     </div>
