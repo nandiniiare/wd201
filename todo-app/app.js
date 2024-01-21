@@ -76,6 +76,7 @@ app.post("/todos", async (request, response) => {
          completed: false
       });
       return response.redirect("/");
+      return response.status(201).json({ message: "Todo created successfully" });
    } catch (error) {
       console.error(error);
       return response.status(422).json(error);

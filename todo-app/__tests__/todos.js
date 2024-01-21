@@ -23,12 +23,16 @@ afterAll(async () => {
    server.close();
 });
 test("should not create a todo item with empty date", async () => {
-   const res = await agent.post("/todos").send({
-     title: "Emptydate",
-     dueDate: "",
-     completed: false,
-   });
- 
+   const csrfToken = extractCsrfToken(await agent.get("/"));
+
+  const response = await agent
+    .post("/todos")
+    .set("Cookie", `_csrf=${csrfToken}`) // Set the CSRF token in the request headers
+    .send({
+      title: "Emptyduedate",
+      dueDate: "",
+      completed: false,
+    });
    // Adjust the expectations based on your application's behavior
    expect(res.status).toBe(400); // Assuming a 400 Bad Request for empty date
    // Add additional assertions if needed
