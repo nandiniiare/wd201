@@ -64,6 +64,12 @@ app.get("/todos/:id", async (request, response) => {
 app.post("/todos", async (request, response) => {
    console.log("Creating a todo", request.body);
    try {
+    console.log(request.body);
+
+    // Check if dueDate is empty
+    if (!request.body.dueDate) {
+      return response.status(400).json({ error: "Bad Request - Empty dueDate" });
+    }
       await Todo.addTodo({
          title: request.body.title,
          dueDate: request.body.dueDate,
