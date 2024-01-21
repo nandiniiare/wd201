@@ -13,6 +13,39 @@ app.use(csrf({ cookie: true }))
 const { Todo } = require("./models");
 const { error } = require('console');
 app.set("view engine","ejs");
+const createSampleItems = async () => {
+  try {
+      // Create sample due today item
+      await Todo.create({
+          title: 'Sample Due Today Item',
+          dueDate: new Date(),
+          completed: false,
+      });
+
+      // Create sample due later item
+      await Todo.create({
+          title: 'Sample Due Later Item',
+          dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Due after 7 days
+          completed: false,
+      });
+
+      // Create sample overdue item
+      await Todo.create({
+          title: 'Sample Overdue Item',
+          dueDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Due 7 days ago
+          completed: false,
+      });
+
+      console.log('Sample items created successfully');
+  } catch (error) {
+      console.error('Error creating sample items:', error);
+  }
+};
+app.use(async (req, res, next) => {
+  // You can add more conditions to run this only once, such as checking if sample items exist
+  await createSampleItems();
+  next();
+});
 
 app.get("/", async (request,response) => {
       const overdue = await Todo.overdue();
@@ -45,22 +78,31 @@ app.get("/todos", async (request, response) => {
    }
 });
 
-app.post("/todos", async (request, response) => {
-   console.log("Creating a todo", request.body);
-   try {
-      console.log(request.body);
-      await Todo.addTodo({
-         title: request.body.title,
-         dueDate: request.body.dueDate,
-         completed: false
-      });
-      return response.redirect("/");
-   } catch (error) {
-      console.error(error);
-      return response.status(422).json({ error: "Unprocessable Entity" });
-   }
+// In your server route for creating todos
+app.post('/todos', async (req, res) => {
+  try {
+    const { title, dueDate } = req.body;
+
+    // Client-side validation
+    if (!title || !dueDate) {
+      return res.status(400).json({ error: 'Title and Due Date are required' });
+    }
+
+    const newTodo = await Todo.create({
+      title,
+      dueDate,
+      completed: false,
+    });
+
+    res.status(201).json(newTodo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
+
+// In your Express server
 app.put('/todos/:id', async (req, res) => {
    try {
      const todoId = req.params.id;
@@ -80,6 +122,7 @@ app.put('/todos/:id', async (req, res) => {
      res.status(500).json({ error: 'Internal Server Error' });
    }
  });
+ 
  app.delete('/todos/:id', async (req, res) => {
    try {
      const todoId = req.params.id;
