@@ -6,19 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="<%= csrfToken %>"/>
     <title>To-do Manager</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/styles.css" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Nandini Todo App</title>
     <script>
     var token = document
         .querySelector('meta[name = "csrf-token"]')
         .getAttribute("content");
 
         const updateTodo = (id) => {
-    const checkbox = document.querySelector(`#checkbox-${id}`);
-    const completed = checkbox.checked;
-
+    const completed = document.querySelector(`#checkbox-${id}`).checked;
     console.log(completed);
 
     const requestOptions = {
@@ -66,7 +62,7 @@
         <div class="col-start-3 col-span-2">
             <%- include('header.ejs') %>
             <form action="/todos" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" id="csrfToken">
                 <div class="flex gap-2 py-4">
                     <div class="flex-auto">
                         <input type="text" name="title" placeholder="What's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
@@ -75,7 +71,7 @@
                         <input type="date" name="dueDate" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4" />
                     </div>
                     <div class="flex-none">
-                        <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2 mb">Add</button>
+                        <button type="submit" class="bg-green-600 text-white px-5 py-1.5 rounded font-medium mr-2 mb-2">Add</button>
                     </div>
                 </div>
             </form>

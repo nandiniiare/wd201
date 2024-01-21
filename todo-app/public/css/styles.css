@@ -12,3 +12,7 @@ body {
     padding: 2px 5px;
     border-radius: 3px;
 }
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
