@@ -4,6 +4,7 @@ const db = require("../models/index");
 const app = require("../app");
 const { Todo } = require("../models");
 const { json } = require("sequelize");
+const { data } = require("cheerio/lib/api/attributes");
 let uniqueIdCounter = 1;
 let server, agent;
 function extractCsrfToken(res) {
@@ -22,15 +23,42 @@ afterAll(async () => {
    await db.sequelize.close();
    server.close();
 });
+test("should create a todo", async () => {
+   // Make a request to get the initial CSRF token
+   const initialResponse = await agent.get("/");
+
+   // Extract CSRF token from the response
+   const csrfToken = extractCsrfToken(initialResponse);
+
+   // Use the CSRF token in the headers of the POST request
+   const response = await agent
+     .post("/todos")
+     .set("_crsf", csrfToken) // Set the CSRF token in the headers
+     .send({
+      _csrf: csrfToken,
+       title: title,
+       dueDate: data,
+       completed: false,
+     });
+
+   // Adjust the expectations based on your application's behavior
+   expect(response.status).toBe(201); // Assuming a 201 Created for successful creation
+   // Add additional assertions if needed
+ });
+
+ 
 test("should not create a todo item with empty date", async () => {
+   const getResponse = await agent.get("/");
+   const csrfToken = extractCsrfToken(getResponse);
    const res = await agent.post("/todos").send({
+     _csrf: csrfToken,
      title: "Emptydate",
      dueDate: "",
      completed: false,
    });
  
    // Adjust the expectations based on your application's behavior
-   expect(res.status).toBe(500); // Assuming a 400 Bad Request for empty date
+   expect(res.status).toBe(400); // Assuming a 400 Bad Request for empty date
    // Add additional assertions if needed
  });
  
@@ -87,7 +115,7 @@ test("should Create a sample overdue item", async () => {
    console.log(markCompletedResponse.body);
  
    // Adjust expectations based on your application's behavior
-   expect(markCompletedResponse.status).toBe(500); // Adjust status code as needed
+   expect(markCompletedResponse.status).toBe(201); // Adjust status code as needed
    expect(markCompletedResponse.body).toBeDefined(); // Ensure response body exists
    expect(markCompletedResponse.body.completed).toBe(true);
  });
@@ -107,7 +135,7 @@ test("should Create a sample overdue item", async () => {
    console.log(toggleResponse.body);
  
    // Adjust expectations based on your application's behavior
-   expect(toggleResponse.status).toBe(500); // Adjust status code as needed
+   expect(toggleResponse.status).toBe(201); // Adjust status code as needed
    expect(toggleResponse.body).toBeDefined(); // Ensure response body exists
    expect(toggleResponse.body.completed).toBe(false);
  });
