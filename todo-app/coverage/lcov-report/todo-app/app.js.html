@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.51% </span>
+                <span class="strong">38.34% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>35/132</span>
+                <span class='fraction'>51/133</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">26.51% </span>
+                <span class="strong">38.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>35/132</span>
+                <span class='fraction'>51/133</span>
             </div>
         
             
@@ -195,7 +195,8 @@
 <a name='L130'></a><a href='#L130'>130</a>
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -214,6 +215,22 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -221,14 +238,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -246,19 +257,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -346,22 +348,22 @@ const { error } = require('console');
 app.set("view engine","ejs");
 &nbsp;
 app.get("/", async (request,response) =&gt; {
-<span class="cstat-no" title="statement not covered" >      const allTodos = await Todo.getTodos();</span>
-<span class="cstat-no" title="statement not covered" >      const overdue = await Todo.overdue();</span>
-<span class="cstat-no" title="statement not covered" >      const dueToday = await Todo.dueToday();</span>
-<span class="cstat-no" title="statement not covered" >      const dueLater = await Todo.dueLater();   </span>
-<span class="cstat-no" title="statement not covered" >      const completedItems = await Todo.completedItems();</span>
-<span class="cstat-no" title="statement not covered" >      if(request.accepts("html")) {</span>
-<span class="cstat-no" title="statement not covered" >         response.render("index", {</span>
-<span class="cstat-no" title="statement not covered" >            title: "Todo application",</span>
-<span class="cstat-no" title="statement not covered" >            allTodos,</span>
-<span class="cstat-no" title="statement not covered" >            overdue,</span>
-<span class="cstat-no" title="statement not covered" >            dueToday,</span>
-<span class="cstat-no" title="statement not covered" >            dueLater,</span>
-<span class="cstat-no" title="statement not covered" >            completedItems,</span>
-<span class="cstat-no" title="statement not covered" >            csrfToken: request.csrfToken(), </span>
-<span class="cstat-no" title="statement not covered" >         });</span>
-<span class="cstat-no" title="statement not covered" >      }else{</span>
+      const allTodos = await Todo.getTodos();
+      const overdue = await Todo.overdue();
+      const dueToday = await Todo.dueToday();
+      const dueLater = await Todo.dueLater();   
+      const completedItems = await Todo.completedItems();
+      if(request.accepts("html")) {
+         response.render("index", {
+            title: "Todo application",
+            allTodos,
+            overdue,
+            dueToday,
+            dueLater,
+            completedItems,
+            csrfToken: request.csrfToken(), 
+         });
+      }<span class="branch-0 cbranch-no" title="branch not covered" >else{</span>
 <span class="cstat-no" title="statement not covered" >         response.json({</span>
 <span class="cstat-no" title="statement not covered" >            overdue,</span>
 <span class="cstat-no" title="statement not covered" >            dueToday,</span>
@@ -405,6 +407,7 @@ app.post("/todos", async (request, response) =&gt; {
 <span class="cstat-no" title="statement not covered" >         completed: false</span>
 <span class="cstat-no" title="statement not covered" >      });</span>
 <span class="cstat-no" title="statement not covered" >      return response.redirect("/");</span>
+<span class="cstat-no" title="statement not covered" >      return response.status(201).json({ message: "Todo created successfully" });</span>
 <span class="cstat-no" title="statement not covered" >   } catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >      console.error(error);</span>
 <span class="cstat-no" title="statement not covered" >      return response.status(422).json(error);</span>
@@ -466,7 +469,7 @@ app.put('/todos/:id', async (req, res) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-01-21T13:58:42.877Z
+                at 2024-01-21T15:57:24.337Z
             </div>
         <script src="../prettify.js"></script>
         <script>
