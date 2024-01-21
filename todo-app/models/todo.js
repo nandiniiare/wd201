@@ -19,41 +19,39 @@ module.exports = (sequelize, DataTypes) => {
     static addTodo({title, dueDate}){
       return this.create({ title: title, dueDate: dueDate, completed: false})
     }
-    static async overdue() {
+    static async overdue(){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.lt]: new Date(),
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
           completed: false,
         },
         order: [["id", "ASC"]],
       });
     }
-    static async dueLater() {
+    static async dueLater(){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date(),
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
           completed: false,
         },
         order: [["id", "ASC"]],
       });
     }
-    static async dueToday() {
+    static async dueToday(){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gte]: new Date(),
-            [Op.lt]: new Date(new Date().setHours(23, 59, 59, 999)),
+            [Op.gt]: new Date().toLocaleDateString("en-CA"),
           },
           completed: false,
         },
         order: [["id", "ASC"]],
       });
     }
-    
      static completedItems() {
       return this.findAll({
         where: {
@@ -77,14 +75,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     static getTodos() {
       return this.findAll({ order: [["id", "ASC"]] });
-    }  
-    setCompletionStatus(bool) {
-      return this.update({ completed: bool });
-    }
+    }       
   }
   
   // Add this method to the Todo model
-
+Todo.prototype.setCompletionStatus = async function (status) {
+  this.completed = status;
+  await this.save();
+};
 
   Todo.init({
     title: {
@@ -95,12 +93,11 @@ module.exports = (sequelize, DataTypes) => {
        },
     },
     dueDate: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      validate: {
-        isDate: true,
-        isAfter: new Date().toISOString().split("T")[0], // Ensures due date is not in the past
-      },
+       type: DataTypes.DATEONLY,
+       allowNull: false,
+       validate: {
+          isDate: true,
+       },
     },
     completed: {
        type: DataTypes.BOOLEAN,
@@ -110,7 +107,58 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Todo',
  });
+ Todo.overdue = async () => {
+  try {
+    const today = new Date();
+    const overdueTodos = await Todo.findAll({
+      where: {
+        dueDate: {
+          [Sequelize.Op.lt]: today, // Get todos with dueDate less than today
+        },
+        completed: false, // Only include incomplete todos
+      },
+    });
+    return overdueTodos;
+  } catch (error) {
+    throw error;
+  }
+};
 
+Todo.dueToday = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
+    const dueTodayTodos = await Todo.findAll({
+      where: {
+        dueDate: {
+          [Sequelize.Op.eq]: today, // Get todos with dueDate equal to today
+        },
+        completed: false,
+      },
+    });
+    return dueTodayTodos;
+  } catch (error) {
+    throw error;
+  }
+};
 
+Todo.dueLater = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueLaterTodos = await Todo.findAll({
+      where: {
+        dueDate: {
+          [Sequelize.Op.gt]: today, // Get todos with dueDate greater than today
+        },
+        completed: false,
+      },
+    });
+    return dueLaterTodos;
+  } catch (error) {
+    throw error;
+  }
+};
+ 
   return Todo;  
 };
