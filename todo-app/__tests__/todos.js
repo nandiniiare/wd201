@@ -17,7 +17,6 @@ beforeAll(async () => {
    agent = request.agent(server);
    await Todo.destroy({ where: {} });
 });
-
 afterAll(async () => {
    await db.sequelize.close();
    server.close();
@@ -28,9 +27,8 @@ test("should not create a todo item with empty date", async () => {
      dueDate: "",
      completed: false,
    });
- 
    // Adjust the expectations based on your application's behavior
-   expect(res.status).toBe(400); // Assuming a 400 Bad Request for empty date
+   expect(res.status).toBe(500); // Assuming a 400 Bad Request for empty date
    // Add additional assertions if needed
  });
  

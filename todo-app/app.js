@@ -63,11 +63,6 @@ app.get("/todos/:id", async (request, response) => {
 
 app.post("/todos", async (request, response) => {
    console.log("Creating a todo", request.body);
-   const dueDate = request.body.dueDate;
-   if (!dueDate) {
-    // If dueDate is not provided, respond with an error
-    return response.status(400).json({ error: 'Due date is required for creating a todo.' });
-  }
    try {
       await Todo.addTodo({
          title: request.body.title,
