@@ -16,32 +16,31 @@
         .getAttribute("content");
 
         const updateTodo = (id) => {
-    const checkbox = document.querySelector(`#checkbox-${id}`);
-    const completed = checkbox.checked;
+  const checkbox = document.querySelector(`#todo-checkbox-${id}`);
+  const completed = checkbox.checked;
 
-    console.log(completed);
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      "_csrf": token,
+      completed: completed,
+    }),
+  };
 
-    const requestOptions = {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            "_csrf": token,
-            completed: completed,
-        }),
-    };
-
-    fetch(`/todos/${id}`, requestOptions)
-        .then((res) => {
-            if (res.ok) {
-                window.location.reload();
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+  fetch(`/todos/${id}`, requestOptions)
+    .then((res) => {
+      if (res.ok) {
+        window.location.reload();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
+
     async function deleteTodo(id) {
         const response = await fetch(`/todos/${id}`, {
             method: "delete",
