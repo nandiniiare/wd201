@@ -13,9 +13,7 @@ app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
 
 const { Todo } = require("./models");
-module.exports = {
-  "**/*.js": ["eslint --fix", "prettier --write"],
-};
+const { error } = require('console');
 app.set("view engine","ejs");
 
 app.get("/", async (request,response) => {
@@ -26,6 +24,7 @@ app.get("/", async (request,response) => {
       const completedItems = await Todo.completedItems();
       if(request.accepts("html")) {
          response.render("index", {
+            title: "Todo application",
             allTodos,
             overdue,
             dueToday,
@@ -35,7 +34,6 @@ app.get("/", async (request,response) => {
          });
       }else{
          response.json({
-            allTodos,
             overdue,
             dueToday,
             dueLater,
@@ -53,12 +51,28 @@ app.get("/todos", async (_request, response) => {
     return response.status(422).json(error);
   }
 });
+app.get("/todos/:id", async (request, response) => {
+   try {
+      const todos = await Todo.findAll(request.params.id);
+      return response.json(todos);
+   } catch (error) {
+      console.error(error);
+      return response.status(500).json({ error: "Internal Server Error" });
+   }
+});
+
 app.post("/todos", async (request, response) => {
    console.log("Creating a todo", request.body);
+   const dueDate = request.body.dueDate;
+   if (!dueDate) {
+    // If dueDate is not provided, respond with an error
+    return response.status(400).json({ error: 'Due date is required for creating a todo.' });
+  }
    try {
       await Todo.addTodo({
          title: request.body.title,
          dueDate: request.body.dueDate,
+         completed: false
       });
       return response.redirect("/");
    } catch (error) {
@@ -67,26 +81,51 @@ app.post("/todos", async (request, response) => {
    }
 });
 
-app.put('/todos/:id', async (request, response) => {
+app.put('/todos/:id', async (req, res) => {
+  console.log("Updating a todo with ID:", req.params.id);
+
   try {
-    await csrf.verify(request);
-    const todo = await Todo.findByPk(request.params.id);
-    const updatedTodo = await todo.setCompletionStatus(request.body.completed);
-    return response.json(updatedTodo);
+    const todoId = req.params.id;
+    const { completed } = req.body;
+
+    // Find the todo by ID
+    const todo = await Todo.findByPk(todoId);
+
+    if (!todo) {
+      return response.status(404).json({ error: 'Todo not found' });
+    }
+
+    // Update the completion status
+    await todo.update({ completed });
+
+    // Fetch the updated todo to get the latest data
+    const updatedTodo = await Todo.findByPk(todoId);
+
+    response.status(200).json({ message: 'Todo updated successfully', todo: updatedTodo });
   } catch (error) {
-    console.log(error);
-    return response.status(422).json(error);
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.delete("/todos/:id", async (request, response) => {
-  console.log("Delete a todo by ID: ", request.params.id);
-  try {
-    await csrf.verify(request);
-    const st = await Todo.remove(request.params.id);
-    return response.json(st > 0);
-  } catch (error) {
-    return response.status(422).json(error);
-  }
-});
+
+ app.delete('/todos/:id', async (req, res) => {
+  
+   try {
+     const todoId = req.params.id;
+ 
+     const todo = await Todo.findByPk(todoId);
+ 
+     if (!todo) {
+       return res.status(404).json({ error: 'Todo not found' });
+     }
+ 
+     await todo.destroy();
+ 
+     res.status(204).end(); // No content
+   } catch (error) {
+     console.error(error);
+     res.status(500).json({ error: 'Internal Server Error' });
+   }
+ });
  
  module.exports = app;
