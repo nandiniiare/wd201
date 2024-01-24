@@ -14,82 +14,94 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) { 
+      Todo.belongsTo(models.User, {
+        foreignKey: 'userId'
+      })
       // define association here
     }
-    static addTodo({title, dueDate}){
-      return this.create({ title: title, dueDate: dueDate, completed: false})
+    static addTodo({title, dueDate, userId }){
+      return this.create({ title: title, dueDate: dueDate, completed: false, userId });
     }
-    static async overdue(){
+    static async overdue(userId){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date().toLocaleDateString("en-CA"),
+            [Op.lt]: new Date(),
           },
+          userId,
           completed: false,
         },
-        order: [["id", "ASC"]],
       });
     }
-    static async dueLater(){
+    static async dueLater(userId){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date().toLocaleDateString("en-CA"),
+            [Op.gt]: new Date(),
           },
+          userId,
           completed: false,
         },
-        order: [["id", "ASC"]],
       });
     }
-    static async dueToday(){
+    static async dueToday(userId){
       return this.findAll({
         where: {
           dueDate: {
-            [Op.gt]: new Date().toLocaleDateString("en-CA"),
+            [Op.eq]: new Date(),
           },
+          userId,
           completed: false,
         },
-        order: [["id", "ASC"]],
       });
     }
-     static completedItems() {
+     static completedItems(userId) {
       return this.findAll({
         where: {
+          userId,
           completed: true,
         },
         order: [["id", "ASC"]],
       });
     }
-    static async remove(id){
+    static async remove(id, userId){
       return this.destroy({
         where: {
             id,
+            userId
         },
       });
     }
-    markAsCompleted() {
-      return this.update({ completed: true });
-    } 
+    static async markAsCompleted(id) {
+      const todo = await this.findByPk(id);
+      if (todo) {
+        await todo.setCompletionStatus(true);
+        return todo;
+      } else {
+        throw new Error('Todo not found');
+      }
+    }    
     static deleteTodo(id) {
       return this.destroy({ where: { id } });
     }
     static getTodos() {
       return this.findAll({ order: [["id", "ASC"]] });
-    }       
+    } 
+          
   }
+  Todo.prototype.setCompletionStatus = async function (status) {
+    this.completed = status;
+    await this.save();
+  };  
   
-  // Add this method to the Todo model
-Todo.prototype.setCompletionStatus = async function (status) {
-  this.completed = status;
-  await this.save();
-};
 
   Todo.init({
     title: {
        type: DataTypes.STRING,
        allowNull: false,
        validate: {
-          notEmpty: true,
+          notNull: true,
+          len: 5
        },
     },
     dueDate: {
@@ -107,58 +119,5 @@ Todo.prototype.setCompletionStatus = async function (status) {
     sequelize,
     modelName: 'Todo',
  });
- Todo.overdue = async () => {
-  try {
-    const today = new Date();
-    const overdueTodos = await Todo.findAll({
-      where: {
-        dueDate: {
-          [Sequelize.Op.lt]: today, // Get todos with dueDate less than today
-        },
-        completed: false, // Only include incomplete todos
-      },
-    });
-    return overdueTodos;
-  } catch (error) {
-    throw error;
-  }
-};
-
-Todo.dueToday = async () => {
-  try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set time to the beginning of the day
-    const dueTodayTodos = await Todo.findAll({
-      where: {
-        dueDate: {
-          [Sequelize.Op.eq]: today, // Get todos with dueDate equal to today
-        },
-        completed: false,
-      },
-    });
-    return dueTodayTodos;
-  } catch (error) {
-    throw error;
-  }
-};
-
-Todo.dueLater = async () => {
-  try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dueLaterTodos = await Todo.findAll({
-      where: {
-        dueDate: {
-          [Sequelize.Op.gt]: today, // Get todos with dueDate greater than today
-        },
-        completed: false,
-      },
-    });
-    return dueLaterTodos;
-  } catch (error) {
-    throw error;
-  }
-};
- 
   return Todo;  
 };
