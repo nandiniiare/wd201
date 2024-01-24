@@ -24,9 +24,10 @@ app.use(csrf('this_should_be_32_character_long', ['POST', 'PUT', 'DELETE']));
 app.use(session({
   secret: "my-super-secret-key-21728172615261562",
   cookie: {
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
+    maxAge: 24 * 60 * 60 * 1000,
+  },
+}),
+);
 app.use(function(request, response, next) {
   response.locals.messages = request.flash();
   next();
@@ -34,23 +35,31 @@ app.use(function(request, response, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new LocalStrategy({
-  usernameField: 'email',
-  passwordField: 'password'
-}, (username, password, done)=>{
-  User.findOne({ where: { email: username } })
-  .then(async function (user) {
-    const result = await bcrypt.compare(password, user.password);
-    if (result) {
-      return done(null, user);
-    } else {
-      return done(null, false, { message: "Invalid password" });
-    }
-  })
-  .catch((error) => {
-    return done(err);
-  });
-}));
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    (username, password, done) => {
+      User.findOne({ where: { email: username } })
+        .then(async (user) => {
+          const result = await bcrypt.compare(password, user.password);
+          if (result) {
+            return done(null, user);
+          } else {
+            return done(null, false, { message: "Invalid password" });
+          }
+        })
+        .catch(() => {
+          return done(null, false, {
+            message: "There does not exist a account on this email",
+          });
+        });
+    },
+  ),
+);
+
 
 
 passport.serializeUser((user, done)=>{
@@ -86,8 +95,7 @@ app.get('/', async (request, response) => {
       });
 });
 
-app.get("/todo", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
-  try {
+app.get("/todos", connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
     const loggedInUser = request.user.id;
     const allTodos = await Todo.getTodos();
     const overdue = await Todo.overdue(loggedInUser);
@@ -95,7 +103,7 @@ app.get("/todo", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
     const dueLater = await Todo.dueLater(loggedInUser);
     const completedItems = await Todo.completedItems(loggedInUser);
     if (request.accepts('html')) {
-      response.render('todo', {
+      response.render('todos', {
         title: 'Todo application',
         allTodos,
         overdue,
@@ -112,10 +120,6 @@ app.get("/todo", connectEnsureLogin.ensureLoggedIn(), async (request, response) 
         completedItems,
       });
     }
-  } catch (error) {
-    console.error(error);
-    response.status(500).json({ error: 'Internal Server Error' });
-  }
 });
 
 app.get("/signup", (request, response) => {
@@ -135,7 +139,7 @@ app.post(
   }),
   function (request, response) {
     console.log(request.user);
-    response.redirect("/todo");
+    response.redirect("/todos");
   }
 );
 app.post("/users", async (request, response) => {
@@ -171,7 +175,7 @@ app.post("/users", async (request, response) => {
       if(err) {
         console.log(err)
       }
-      response.redirect("/todo");
+      response.redirect("/todos");
     })
   }catch (error){
     console.log(error);
@@ -187,6 +191,15 @@ app.get('/todos', async (_request, response) => {
     response.status(422).json(error);
   }
 });
+app.get("/todos/:id", async function (request, response) {
+  try {
+    const todo = await Todo.findByPk(request.params.id);
+    return response.json(todo);
+  } catch (error) {
+    console.log(error);
+    return response.status(422).json(error);
+  }
+});
 
 app.get('/signout', (request, response, next)=> {
   request.logout((err)=> {
@@ -195,7 +208,7 @@ app.get('/signout', (request, response, next)=> {
   })
 })
 
-app.post('/todo',connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
+app.post('/todos',connectEnsureLogin.ensureLoggedIn(), async (request, response) => {
   if (request.body.title.length == 0) {
     request.flash("error", "aka blank text");
     return response.redirect("/todos");
@@ -214,52 +227,54 @@ app.post('/todo',connectEnsureLogin.ensureLoggedIn(), async (request, response) 
       dueDate: request.body.dueDate,  
       userId: request.user.id
     });
-    return response.redirect('/todo');
+    return response.redirect('/todos');
   } catch (error) {
     console.log(error);
     return response.status(422).json(error);
   }
 });
 
-app.put('/todos/:id', connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  console.log('Updating a todo with ID:', req.params.id);
-  try {
-    const todoId = req.params.id;
-    const { completed } = req.body;
-
-    const todo = await Todo.findByPk(todoId);
-
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo not found' });
+app.put(
+  "/todos/:id", connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    console.log("We have to update a todo with ID:", request.params.id);
+    const todo = await Todo.findByPk(request.params.id);
+    try {
+      const updatedtodo = await todo.setCompletionStatus(
+        request.body.completed,
+      );
+      return response.json(updatedtodo);
+    } catch (error) {
+      console.log(error);
+      return response.status(422).json(error);
     }
+  },
+);
 
-    await todo.update({ completed });
-
-    const updatedTodo = await Todo.findByPk(todoId);
-
-    res.status(200).json({ message: 'Todo updated successfully', todo: updatedTodo });
+app.put("/todos/:id/markAsCompleted", async (request, response) => {
+  console.log("We have to update a todo with ID:", request.params.id);
+  const todo = await Todo.findByPk(request.params.id);
+  try {
+    const updatedtodo = await todo.setCompletionStatus(request.body.completed);
+    return response.json(updatedtodo);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.log(error);
+    return response.status(422).json(error);
   }
 });
-
-app.delete('/todos/:id',connectEnsureLogin.ensureLoggedIn(), async (req, res) => {
-  try {
-    const todoId = req.params.id;
-    const todo = await Todo.findByPk(todoId);
-
-    if (!todo) {
-      return res.status(404).json({ error: 'Todo not found' });
+app.delete(
+  "/todos/:id", connectEnsureLogin.ensureLoggedIn(),
+  async (request, response) => {
+    // console.log("Delete a todo by ID: ", request.params.id)
+    const loggedInUser = request.user.id;
+    console.log("We have to delete a todo with ID: ", request.params.id);
+    try {
+      const status = await Todo.remove(request.params.id, loggedInUser);
+      return response.json(status ? true : false);
+    } catch (err) {
+      return response.status(422).json(err);
     }
-
-    await todo.destroy();
-
-    res.status(204).end();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
+  },
+);
 
 module.exports = app;
